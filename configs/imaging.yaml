@@ -1,0 +1,66 @@
+# starter_project's copy of Raphael's imaging settings. Fill in the NWB
+# metadata for your project (lab, experimenters, procedures, keywords) and
+# pass this file to processing jobs: --config configs/imaging.yaml
+# Processing settings below are the lab's methods; change them only with a
+# reason, and say so in your Methods.
+
+# In vivo two-photon imaging: metadata and processing settings.
+#
+# Everything under `nwb` is written into every processed file, so a file
+# stands on its own when deposited on DANDI. Fill in the TODOs before
+# publishing; `raphael-imaging validate` flags anything DANDI will reject.
+# Read by `raphael-imaging` (src/raphael/scripts/imaging.py).
+
+# These are Raphael's defaults. Each project keeps its own copy in its
+# configs/ (its lab, experimenters, procedures, keywords) and passes it with
+# `raphael-jobs make --config configs/imaging.yaml`; the job snapshots it.
+
+nwb:
+  lab: TODO                          # set per project
+  institution: TODO
+  # Recording times given without a UTC offset are read in this timezone.
+  timezone: Europe/Vienna
+  experimenter: [TODO]               # DANDI form: 'Last, First'
+  keywords: [two-photon, calcium imaging, mice]
+  related_publications: []           # DOIs, e.g. https://doi.org/...
+  experiment_description: TODO
+  # Procedures, as text that points to the protocol pages that hold the
+  # detail (docs/protocols/).
+  surgery: TODO                      # point to the project's protocol pages
+  virus: TODO                        # construct, titre, volume, coordinates
+  pharmacology: TODO                 # anaesthesia and analgesia
+  data_collection: TODO              # microscope, objective, laser, frame rate
+
+subject:
+  species: Mus musculus
+  # Per-mouse values (sex, date_of_birth or age, strain, genotype) come from
+  # the session table; these are defaults.
+  strain: C57BL/6J
+  sex: U
+
+microscope:
+  name: Microscope
+  description: TODO                  # make and model
+  manufacturer: TODO
+
+imaging_plane:
+  indicator: TODO                    # e.g. GCaMP8m
+  location: CA1
+  excitation_lambda: 920.0           # nm
+  emission_lambda: 510.0             # nm
+
+processing:
+  # Name of the pipeline that produced the traces; becomes the `src-` tag in
+  # file names (`_src-suite2p_ophys.nwb`), so outputs of different pipelines
+  # can live side by side.
+  pipeline: suite2p
+  dff:
+    # F0 is a running low percentile of the (neuropil-corrected) trace.
+    percentile: 8
+    window_s: 60
+  neuropil_coefficient: 0.7
+
+# clark2025 uses 5 cm/s to split moving from stationary.
+behaviour:
+  moving_threshold_cm_s: 5.0
+  min_epoch_s: 0.05

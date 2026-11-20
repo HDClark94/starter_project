@@ -1,0 +1,142 @@
+# starter_project's copy of Raphael's ephys settings. Fill in the NWB
+# metadata for your project (lab, experimenters, procedures, keywords) and
+# pass this file to processing jobs: --config configs/ephys.yaml
+# Processing settings below are the lab's methods; change them only with a
+# reason, and say so in your Methods.
+
+# In vivo extracellular electrophysiology (Neuropixels 2.0): metadata and
+# processing settings.
+#
+# Everything under `nwb` is written into every processed file, so a file
+# stands on its own when deposited on DANDI. Keep it in step with
+# configs/imaging.yaml. Read by the `kilosort4` job stage
+# (src/raphael/ephys/), which snapshots this file into each job.
+
+# These are Raphael's defaults. Each project keeps its own copy in its
+# configs/ (its lab, experimenters, procedures, keywords) and passes it with
+# `raphael-jobs make --config configs/ephys.yaml`; the job snapshots it.
+
+nwb:
+  lab: TODO                          # set per project
+  institution: TODO
+  # Recording times given without a UTC offset are read in this timezone.
+  timezone: Europe/Vienna
+  experimenter: [TODO]               # DANDI form: 'Last, First'
+  keywords: [extracellular electrophysiology, Neuropixels, mice]
+  related_publications: []           # DOIs, e.g. https://doi.org/...
+  experiment_description: TODO
+  surgery: TODO                      # probe implant; point to the protocol pages
+  pharmacology: TODO                 # anaesthesia and analgesia
+  data_collection: TODO              # acquisition system and software versions
+
+subject:
+  species: Mus musculus
+  # Per-mouse values (sex, date_of_birth or age, strain, genotype) come from
+  # the job params; these are defaults.
+  strain: C57BL/6J
+  sex: U
+
+probe:
+  name: Neuropixels 2.0
+  description: Neuropixels 2.0 four-shank probe (NP2014)
+  manufacturer: IMEC
+  # Brain region of the recorded channels until histology assigns them per
+  # channel; an Allen CCF acronym, e.g. CA1.
+  location: unknown
+
+# Everything below follows the Methods ("Offline spike sorting") and the
+# lab's code: protocol kilosort4A in MattNolanLab/nolanlab-ephys
+# (src/nolanlab_ephys/spikeinterface_tools.py) and Harry's scripts in
+# chrishalcrow/nolanlab-ephys. See docs/ephys_pipeline.md.
+
+preprocessing:
+  # Before sorting, on each shank, in this order:
+  # 1. Remove bad and noisy channels: spikeinterface's detect_bad_channels
+  #    (the IBL method), with the lab's seed.
+  remove_bad_channels: true
+  bad_channel_seed: 1205
+  # 2. Correct the phase shift: Neuropixels digitise channels in turn, a few
+  #    microseconds apart. Skipped if the reader gives no shifts.
+  phase_shift: true
+
+sorter:
+  name: kilosort4
+  # Kilosort 4.0.16 (pinned in pyproject.toml), default parameters except motion
+  # correction, which is off. use_binary_file: false hands Kilosort the
+  # preprocessed recording directly instead of writing a copy first.
+  params:
+    do_correction: false
+    use_binary_file: false
+  # Per-job overrides: make --param 'kilosort4={...}'.
+
+postprocessing:
+  # The recording the analysers are built on, per shank: the channels the
+  # sorter saw, phase shift, common median reference, band-pass.
+  bandpass_hz: [300, 6000]
+  # Sparsity: channels within 70 µm of each unit's largest channel,
+  # largest by positive or negative peak.
+  sparsity: {peak_sign: both, radius_um: 70}
+  # The lab's `generic_postprocessing`. unit_locations defaults to monopolar
+  # triangulation. waveforms are deleted after computing the rest.
+  extensions:
+    unit_locations: {}
+    random_spikes: {}
+    noise_levels: {}
+    waveforms: {}
+    templates: {}
+    spike_amplitudes: {}
+    amplitude_scalings: {}
+    isi_histograms: {}
+    spike_locations: {}
+    correlograms: {}
+    template_similarity: {method: l2}
+    quality_metrics: {}
+    # Multi-channel metrics (spread, exp_decay, velocity_above/below) are in
+    # every clark2025 _clusters.npz, so they were computed; generic_
+    # postprocessing alone would leave them out.
+    template_metrics: {include_multi_channel_metrics: true}
+  keep_waveforms: false
+  # Each unit's mean and SD waveform, stored in _clusters.npz, on this many
+  # channels nearest its extremum channel.
+  waveform_channels: 16
+  # Also write _ecephys.nwb: everything in _clusters.npz (spike times,
+  # waveforms, labels, metrics) plus the electrodes table, as one NWB file,
+  # e.g. for DANDI. Not part of the default processed dataset.
+  write_ecephys_nwb: false
+  # The sorting analysers (zarr) and bombcell curation files are working
+  # files, not part of the processed dataset: everything in them that
+  # analysis uses is in the NWB file and the tables. false deletes them after
+  # the run; true keeps them in outputs/kilosort4/analyzers/ (outside the
+  # processed tree), e.g. to recompute metrics or recurate.
+  keep_analyzer: false
+
+curation:
+  # bombcell (spikeinterface's default thresholds) labels each unit good,
+  # mua, noise or non_soma. Keep good and mua.
+  keep: [good, mua]
+  # Exclude a unit, in every session of the day, when its ISI violation
+  # ratio (ISIs under 1.5 ms relative to its rate; Poisson ~0.5) exceeds 10
+  # in any session. Limit to some session types with e.g. [VR, OF1].
+  isi_violations_ratio_max: 10
+  isi_sessions: null
+
+lfp:
+  # The `lfp` job stage (a CPU job) writes _lfp.nwb per recording. These
+  # settings decide its size and detail; the defaults reproduce the lab's
+  # files (mecpy). Size ~ duration x rate_hz x channels x bytes per value
+  # (x2 with theta), before compression: 30 min at the defaults is
+  # ~0.35 GB per series (float32), ~0.17 GB (float16).
+  # Per job: make --param 'lfp={rate_hz: 500, channels: {every: 2}}'.
+  rate_hz: 1000              # downsampling
+  band_hz: [1, 400]          # band-pass before downsampling; keep below rate_hz / 2
+  channels:
+    block_size: 8            # contacts averaged per LFP channel, in depth order
+                             # per shank (8 = ~60 µm); 1 = every contact
+    every: 1                 # keep every Nth LFP channel along a shank
+    shanks: null             # e.g. [0, 3]; null = all
+  dtype: float32             # float32, or float16 (half the size, ~3 digits)
+  compression_level: 4       # gzip, 0-9
+  theta:
+    enabled: true            # also write theta phase (doubles the size)
+    band_hz: [6, 10]
+    min_peak_distance_s: 0.08

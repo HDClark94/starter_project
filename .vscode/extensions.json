@@ -1,0 +1,9 @@
+{
+  // VS Code offers to install these when the folder is opened.
+  "recommendations": [
+    "anthropic.claude-code",
+    "ms-python.python",
+    "ms-toolsai.jupyter",
+    "charliermarsh.ruff"
+  ]
+}

@@ -1,0 +1,54 @@
+[project]
+name = "starter_project"
+version = "0.1.0"
+description = "A starting point for a project that uses Raphael for neural data processing and analysis."
+readme = "README.md"
+# Exactly 3.11, as Raphael requires (Kilosort 4.0.16 needs it).
+requires-python = "==3.11.*"
+dependencies = [
+    "raphael",
+    "matplotlib>=3.8",
+    "ipykernel>=6.29",          # runs the notebooks in VS Code
+]
+
+[project.optional-dependencies]
+# Spike sorting (Kilosort 4) and two-photon processing (suite2p). Only
+# where those run: a GPU machine or the cluster. torch and torchvision are
+# listed here as well so the CUDA index below applies to them.
+gpu = ["raphael[gpu]", "torch==2.14.1", "torchvision==0.29.1"]
+dev = ["pytest>=8.0", "ruff>=0.9.9", "nbclient>=0.10", "nbformat>=5.10"]
+
+# This project's own job stages: `uv run raphael-jobs make --stage tuning_scores`.
+[project.entry-points."raphael.stages"]
+starter_project = "starter_project.stages"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.uv]
+environments = [
+    "sys_platform == 'darwin'",
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+]
+
+[tool.uv.sources]
+# Raphael, pinned to a release. To move to a new one:
+#   uv add "raphael @ git+https://github.com/HDClark94/Raphael" --tag vX.Y.Z
+# To work on Raphael at the same time: uv add --editable ../Raphael
+raphael = { git = "https://github.com/HDClark94/Raphael", tag = "v0.2.0" }
+# torch from the CUDA 12.6 build on Linux (the cluster), PyPI on macOS.
+# Copied from Raphael's pyproject: uv ignores these blocks in dependencies.
+torch = [{ index = "pytorch-cu126", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cu126", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.ruff]
+line-length = 99
