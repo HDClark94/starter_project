@@ -65,10 +65,17 @@ to cite. Keep a line per notable change under `## [Unreleased]` in
 `CHANGELOG.md`, then:
 
 ```bash
+git switch -c release-1.0.0
 uv run python .github/scripts/release_tools.py prepare 1.0.0
-git commit -am "Release 1.0.0" && git tag -a v1.0.0 -m "v1.0.0"
-git push origin main v1.0.0
+git commit -am "Release 1.0.0" && git push -u origin release-1.0.0
+gh pr create --fill              # merge once CI passes, then tag main:
+git switch main && git pull && git tag -a v1.0.0 -m "v1.0.0" && git push origin v1.0.0
 ```
+
+Protect your fork's `main` too (GitHub → Settings → Branches: require a pull
+request and the `test` check), so nothing reaches it without passing CI.
+Branch protection is free on public repositories; private ones need a paid
+plan or a GitHub organization.
 
 The release workflow publishes only if CI passes and Raphael is pinned to a
 released tag in `uv.lock`, so the release always names the Raphael version

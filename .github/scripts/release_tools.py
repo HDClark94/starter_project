@@ -178,10 +178,11 @@ def main(argv=None):
     try:
         if args.command == 'prepare':
             v = prepare(args.version)
-            print(f'Prepared {v}. Check the diff, then:\n'
-                  f'  git commit -am "Release {v}"\n'
-                  f'  git tag -a v{v} -m "v{v}"\n'
-                  f'  git push origin main v{v}      # the release workflow does the rest')
+            print(f'Prepared {v}. Check the diff, then (main is protected, so by pull request):\n'
+                  f'  git commit -am "Release {v}" && git push -u origin HEAD\n'
+                  f'  gh pr create --fill                   # merge once CI passes, then:\n'
+                  f'  git switch main && git pull\n'
+                  f'  git tag -a v{v} -m "v{v}" && git push origin v{v}   # the release workflow does the rest')
         elif args.command == 'check':
             v, pins = check(args.tag, require_pinned=args.require_pinned)
             print(f'{args.tag}: versions, changelog and citation agree'
