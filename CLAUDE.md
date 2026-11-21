@@ -19,3 +19,6 @@ as its backend for neural data processing and shared analysis.
   Use `raphael.ephys.layout.Session` for paths, never build names by hand.
 - Data never goes in git (`data/`, `jobs/`, `figures/` are ignored).
 - Tests: `uv run pytest`.
+- Releases: note changes under `## [Unreleased]` in CHANGELOG.md; release
+  with `.github/scripts/release_tools.py prepare X.Y.Z`. Raphael must be
+  pinned to a release tag in uv.lock before a release (tests check this).

@@ -27,6 +27,7 @@ starter_project/
 │   └── demo.py                          the demo data
 ├── configs/                             your copies of Raphael's settings
 ├── tests/                               uv run pytest
+├── CHANGELOG.md, CITATION.cff           releases and how to cite them
 └── CLAUDE.md                            tells Claude Code how this project is laid out
 ```
 
@@ -55,6 +56,26 @@ on the CPU (about 2 minutes on the demo).
    (lab, experimenters, procedures).
 3. Replace `arena.py` and `behaviour.py` with your apparatus and behaviour.
 4. Delete the demo data and the parts you do not need.
+5. Edit `CITATION.cff` and `LICENSE` (your name), and start `CHANGELOG.md` afresh.
+
+## Releasing (for a paper, or any result you share)
+
+Each release is a GitHub Release, and with Zenodo connected it gets a DOI
+to cite. Keep a line per notable change under `## [Unreleased]` in
+`CHANGELOG.md`, then:
+
+```bash
+uv run python .github/scripts/release_tools.py prepare 1.0.0
+git commit -am "Release 1.0.0" && git tag -a v1.0.0 -m "v1.0.0"
+git push origin main v1.0.0
+```
+
+The release workflow publishes only if CI passes and Raphael is pinned to a
+released tag in `uv.lock`, so the release always names the Raphael version
+it ran on. In a paper, cite both: this project's release DOI and Raphael's.
+Edit `CITATION.cff` (title, authors) when you make this project yours.
+Details, Zenodo set-up and an example code-availability statement:
+[Raphael's docs/releases.md](https://github.com/HDClark94/Raphael/blob/main/docs/releases.md).
 
 Moving to a newer Raphael:
 `uv add "raphael @ git+https://github.com/HDClark94/Raphael" --tag vX.Y.Z`,

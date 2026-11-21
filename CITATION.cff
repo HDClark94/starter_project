@@ -1,0 +1,23 @@
+# How to cite this project. GitHub shows it as "Cite this repository", and
+# Zenodo uses it for each release's DOI record. In your fork: change the
+# title, abstract, authors and repository-code, and add the paper under
+# preferred-citation when it is out. version and date-released are updated
+# by release_tools.py prepare.
+cff-version: 1.2.0
+message: If you use this code, please cite the release you used.
+type: software
+title: "starter_project: a template for projects built on Raphael"
+abstract: >-
+  A starting point for analysis projects that use Raphael, the Mikulovic and
+  Hangya labs' shared core for neural data processing and analysis.
+authors:
+  - given-names: Harry
+    family-names: Clark
+license: MIT
+repository-code: "https://github.com/HDClark94/starter_project"
+references:
+  - type: software
+    title: "Raphael: shared core for neural data processing and analysis"
+    repository-code: "https://github.com/HDClark94/Raphael"
+version: 0.1.0
+date-released: "2026-11-21"

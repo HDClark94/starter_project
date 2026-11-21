@@ -1,0 +1,56 @@
+# Publish a GitHub Release when a version tag is pushed (git push origin v1.0.0).
+#
+#   check    the tag matches pyproject.toml, CITATION.cff and a dated
+#            CHANGELOG.md section, is on main, and Raphael is pinned to a
+#            released tag in uv.lock (so the release names a Raphael that exists)
+#   ci       lint and tests
+#   publish  the GitHub Release, with that version's changelog as notes
+#
+# With Zenodo connected, each release is archived and gets a DOI. Prepare a
+# release with `uv run python .github/scripts/release_tools.py prepare X.Y.Z`.
+
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v10.3.3
+      - name: Versions agree with the tag, and Raphael is a pinned release
+        run: uv run --no-project python .github/scripts/release_tools.py check "$GITHUB_REF_NAME" --require-pinned raphael
+      - name: The tag is on main
+        run: |
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main || {
+            echo "::error::$GITHUB_REF_NAME is not on main: release from main only"; exit 1; }
+
+  ci:
+    needs: check
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    needs: [check, ci]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: astral-sh/setup-uv@v10.3.3
+      - name: Release notes from CHANGELOG.md
+        run: |
+          uv run --no-project python .github/scripts/release_tools.py notes "${GITHUB_REF_NAME#v}" > notes.md
+          RAPHAEL=$(uv run --no-project python -c "import tomllib, re; p = next(p for p in tomllib.load(open('uv.lock', 'rb'))['package'] if p['name'] == 'raphael'); print(re.search(r'tag=([^&#]+)', p['source']['git']).group(1))")
+          printf '\n---\nBuilt on Raphael %s (https://github.com/HDClark94/Raphael/releases/tag/%s).\n' "$RAPHAEL" "$RAPHAEL" >> notes.md
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --title "${{ github.event.repository.name }} $GITHUB_REF_NAME" --notes-file notes.md
