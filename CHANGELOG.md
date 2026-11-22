@@ -5,6 +5,14 @@ with Zenodo connected, gets a DOI); see "Releasing" in the README.
 
 ## [Unreleased]
 
+### Changed
+- Raphael pinned to v0.3.0. Importing `starter_project` applies Raphael's
+  figure style (`raphael.style.use()`), so every figure in a project built
+  from this template shares the labs' look.
+- `scripts/analyse_tuning.py` and the analysis notebook draw with
+  `raphael.plots` (rate maps against the arena's size, raster, score
+  against its shuffled null) and save with `style.save` (PDF and PNG).
+
 ## [0.1.0] - 2026-11-21
 
 ### Added

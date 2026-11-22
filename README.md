@@ -31,6 +31,10 @@ starter_project/
 └── CLAUDE.md                            tells Claude Code how this project is laid out
 ```
 
+Importing the package applies Raphael's figure style, so your figures
+share the labs' look from the start; Raphael's standard plots
+(`raphael.plots`) cover rate maps, tuning curves, peri-event plots and more.
+
 The rule: **neural processing and shared analysis come from Raphael;
 this repo holds only what is specific to your project.** If you write
 something other projects would use, suggest it for Raphael.

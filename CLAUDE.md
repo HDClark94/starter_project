@@ -17,6 +17,10 @@ as its backend for neural data processing and shared analysis.
 - Processed files follow Raphael's tree:
   `{root}/M{mouse}/D{day}/{type}/sub-M{mouse}_ses-D{day}_typ-{type}_...`.
   Use `raphael.ephys.layout.Session` for paths, never build names by hand.
+- Figures: importing `starter_project` applies `raphael.style`. Use
+  `raphael.plots` for standard plots (rate maps, tuning curves, peri-event,
+  rasters...), `style.figsize` for journal widths and `style.save` to write
+  figures. Don't restyle by hand or redefine these helpers.
 - Data never goes in git (`data/`, `jobs/`, `figures/` are ignored).
 - Tests: `uv run pytest`.
 - Releases: note changes under `## [Unreleased]` in CHANGELOG.md; release

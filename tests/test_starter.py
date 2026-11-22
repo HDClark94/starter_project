@@ -53,3 +53,22 @@ def test_notebook_runs(name, tmp_path, monkeypatch):
     nb = nbformat.read(ROOT / 'notebooks' / name, as_version=4)
     NotebookClient(nb, timeout=600, kernel_name='python3',
                    resources={'metadata': {'path': str(tmp_path / 'notebooks')}}).execute()
+
+
+def test_importing_the_project_applies_raphael_style():
+    import matplotlib as mpl
+
+    import starter_project  # noqa: F401
+    assert mpl.rcParams['patch.linewidth'] == 0             # shaded areas without outlines
+    assert mpl.rcParams['axes.spines.top'] is False
+    assert mpl.rcParams['pdf.fonttype'] == 42                # editable text in PDFs
+
+
+def test_analysis_script_writes_figures(processed, tmp_path):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('analyse_tuning',
+                                                  ROOT / 'scripts' / 'analyse_tuning.py')
+    script = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(script)
+    pdf = script.main([str(processed), '--n-shuffles', '10', '--out', str(tmp_path)])
+    assert pdf.exists() and pdf.with_suffix('.png').exists() and pdf.with_suffix('.csv').exists()
