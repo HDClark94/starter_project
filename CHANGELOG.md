@@ -6,6 +6,10 @@ with Zenodo connected, gets a DOI); see "Releasing" in the README.
 ## [Unreleased]
 
 ### Changed
+- starter_project is a GitHub template: start a project with **Use this
+  template** (which allows private repositories) instead of forking.
+
+### Changed
 - Raphael pinned to v0.3.0. Importing `starter_project` applies Raphael's
   figure style (`raphael.style.use()`), so every figure in a project built
   from this template shares the labs' look.
