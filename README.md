@@ -1,10 +1,10 @@
 # starter_project
 
 A starting point for a new analysis project. Fork it, rename it, and build
-your project on top of [Raphael](https://github.com/HDClark94/Raphael), the
+your project on top of [Raphael](https://github.com/CogEmLab/Raphael), the
 labs' shared core for neural data processing and analysis.
 
-**New here? Follow [Getting started](https://github.com/HDClark94/Raphael/blob/main/docs/getting_started.md)**:
+**New here? Follow [Getting started](https://github.com/CogEmLab/Raphael/blob/main/docs/getting_started.md)**:
 VS Code and Claude Code set-up, then forking and installing this repository,
 step by step.
 
@@ -86,8 +86,8 @@ released tag in `uv.lock`, so the release always names the Raphael version
 it ran on. In a paper, cite both: this project's release DOI and Raphael's.
 Edit `CITATION.cff` (title, authors) when you make this project yours.
 Details, Zenodo set-up and an example code-availability statement:
-[Raphael's docs/releases.md](https://github.com/HDClark94/Raphael/blob/main/docs/releases.md).
+[Raphael's docs/releases.md](https://github.com/CogEmLab/Raphael/blob/main/docs/releases.md).
 
 Moving to a newer Raphael:
-`uv add "raphael @ git+https://github.com/HDClark94/Raphael" --tag vX.Y.Z`,
+`uv add "raphael @ git+https://github.com/CogEmLab/Raphael" --tag vX.Y.Z`,
 then commit `pyproject.toml` and `uv.lock`.

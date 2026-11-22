@@ -37,9 +37,9 @@ environments = [
 
 [tool.uv.sources]
 # Raphael, pinned to a release. To move to a new one:
-#   uv add "raphael @ git+https://github.com/HDClark94/Raphael" --tag vX.Y.Z
+#   uv add "raphael @ git+https://github.com/CogEmLab/Raphael" --tag vX.Y.Z
 # To work on Raphael at the same time: uv add --editable ../Raphael
-raphael = { git = "https://github.com/HDClark94/Raphael", tag = "v0.3.0" }
+raphael = { git = "https://github.com/CogEmLab/Raphael", tag = "v0.3.0" }
 # torch from the CUDA 12.6 build on Linux (the cluster), PyPI on macOS.
 # Copied from Raphael's pyproject: uv ignores these blocks in dependencies.
 torch = [{ index = "pytorch-cu126", marker = "sys_platform == 'linux'" }]

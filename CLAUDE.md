@@ -1,6 +1,6 @@
 # starter_project
 
-A project repository that uses **Raphael** (https://github.com/HDClark94/Raphael)
+A project repository that uses **Raphael** (https://github.com/CogEmLab/Raphael)
 as its backend for neural data processing and shared analysis.
 
 - Neural processing (spike sorting, LFP, imaging, NWB), loading spikes or
