@@ -1,11 +1,13 @@
 # starter_project
 
-A starting point for a new analysis project. Fork it, rename it, and build
+A starting point for a new analysis project. Click **Use this template**
+(it can be private), rename it, and build
 your project on top of [Raphael](https://github.com/CogEmLab/Raphael), the
 labs' shared core for neural data processing and analysis.
 
 **New here? Follow [Getting started](https://github.com/CogEmLab/Raphael/blob/main/docs/getting_started.md)**:
-VS Code and Claude Code set-up, then forking and installing this repository,
+VS Code and Claude Code set-up, then creating your project from this
+template and installing it,
 step by step.
 
 ## What's inside
@@ -76,7 +78,7 @@ gh pr create --fill              # merge once CI passes, then tag main:
 git switch main && git pull && git tag -a v1.0.0 -m "v1.0.0" && git push origin v1.0.0
 ```
 
-Protect your fork's `main` too (GitHub → Settings → Branches: require a pull
+Protect your project's `main` too (GitHub → Settings → Branches: require a pull
 request and the `test` check), so nothing reaches it without passing CI.
 Branch protection is free on public repositories; private ones need a paid
 plan or a GitHub organization.
