@@ -1695,7 +1695,7 @@ wheels = [
 [[package]]
 name = "raphael"
 version = "0.3.0"
-source = { git = "https://github.com/HDClark94/Raphael?tag=v0.3.0#27595f74f64330afb758cd14f5a743fc1f655632" }
+source = { git = "https://github.com/CogEmLab/Raphael?tag=v0.3.0#27595f74f64330afb758cd14f5a743fc1f655632" }
 dependencies = [
     { name = "h5py", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux') or sys_platform == 'darwin'" },
     { name = "matplotlib", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux') or sys_platform == 'darwin'" },
@@ -2012,8 +2012,8 @@ requires-dist = [
     { name = "nbclient", marker = "extra == 'dev'", specifier = ">=0.10" },
     { name = "nbformat", marker = "extra == 'dev'", specifier = ">=5.10" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
-    { name = "raphael", git = "https://github.com/HDClark94/Raphael?tag=v0.3.0" },
-    { name = "raphael", extras = ["gpu"], marker = "extra == 'gpu'", git = "https://github.com/HDClark94/Raphael?tag=v0.3.0" },
+    { name = "raphael", git = "https://github.com/CogEmLab/Raphael?tag=v0.3.0" },
+    { name = "raphael", extras = ["gpu"], marker = "extra == 'gpu'", git = "https://github.com/CogEmLab/Raphael?tag=v0.3.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9.9" },
     { name = "torch", marker = "sys_platform == 'linux' and extra == 'gpu'", specifier = "==2.14.1", index = "https://download.pytorch.org/whl/cu126" },
     { name = "torch", marker = "sys_platform != 'linux' and extra == 'gpu'", specifier = "==2.14.1" },
